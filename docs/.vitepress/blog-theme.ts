@@ -31,7 +31,7 @@ const blogTheme = getThemeConfig({
   footer: {
     // message 字段支持配置为HTML内容，配置多条可以配置为数组
     // message: '下面 的内容和图标都是可以修改的噢（当然本条内容也是可以隐藏的）',
-    copyright: 'MIT License | 翠微',
+    copyright: 'MIT License | 书灏',
     // icpRecord: {
     //   name: '蜀ICP备19011724号',
     //   link: 'https://beian.miit.gov.cn/'
@@ -70,15 +70,15 @@ const blogTheme = getThemeConfig({
   popover: {
     title: '公告',
     body: [
-      { type: 'text', content: '👇公众号👇---👇 微信 👇' },
+      { type: 'text', content: '👇 微信 👇' },
       {
         type: 'image',
-        src: 'https://img.cdn.sugarat.top/mdImg/MTYxNTAxODc2NTIxMA==615018765210~fmt.webp',
-        alt: '粥里有勺糖微信二维码'
+        src: 'https://zhaowuya.s3.bitiful.net/wx.jpg',
+        alt: '微信二维码'
       },
       {
         type: 'text',
-        content: '欢迎大家加群&私信交流'
+        content: '欢迎大家私信交流'
       },
       {
         type: 'text',
