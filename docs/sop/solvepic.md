@@ -1,6 +1,5 @@
 ---
 title: 个人博客图片存储问题
-top: true
 tags:
   - Hexo
   - 博客
