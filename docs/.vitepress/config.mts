@@ -15,7 +15,7 @@ const base = process.env.GITHUB_ACTIONS === 'true'
 export default defineConfig({
   // 继承博客主题(@sugarat/theme)
   extends: blogTheme,
-  // base,
+  base,
   lang: 'zh-cn',
   title: '书灏的博客',
   description: '庐山烟雨浙江潮',
