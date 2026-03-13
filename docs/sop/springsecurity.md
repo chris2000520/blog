@@ -35,9 +35,10 @@ categories: 笔记
    </dependency>
    ```
 
-   {% note warning %}
-   注意：Spring Boot和Spring Security之间版本有依赖关系，各个版本不一样，详细请参考[官方文档](https://www.docs4dev.com/docs/zh/spring-security/5.1.2.RELEASE/reference/get-spring-security.html#release-numbering)，作者Spring Boot版本是2.6，对应的Spring Security版本是5.6，由于Spring Boot提供了一个Maven BOM来Management依赖版本，因此无需指定版本。如果您想覆盖Spring Security版本，可以通过提供Maven属性来实现。
-   {% endnote %}
+   
+
+   > 注意：Spring Boot和Spring Security之间版本有依赖关系，各个版本不一样，详细请参考[官方文档](https://www.docs4dev.com/docs/zh/spring-security/5.1.2.RELEASE/reference/get-spring-security.html#release-numbering)，作者Spring Boot版本是2.6，对应的Spring Security版本是5.6，由于Spring Boot提供了一个Maven BOM来Management依赖版本，因此无需指定版本。如果您想覆盖Spring Security版本，可以通过提供Maven属性来实现。
+   > 
 
 3. 编写Controller类。
 
@@ -59,7 +60,7 @@ categories: 笔记
    server.port=8111
    ```
 
-5. 启动Spring Boot，在浏览器输入[localhost:8111/test/hello](http://localhost:8111/test/hello)发现会有一个登录界面，需要输入用户名和密码。这时打开控制台发现里面有一个密码:
+5. 启动Spring Boot，在浏览器输入 `localhost:8111/test/hello` 发现会有一个登录界面，需要输入用户名和密码。这时打开控制台发现里面有一个密码:
 
    ```shel
    Using generated security password: b1caa423-4f6c-4522-912e-79718ce46a7e
@@ -230,9 +231,10 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 INSERT INTO `users` VALUES (1, 'zwy', '{noop}123');
 ```
 
-{% note info %}
-这里为了测试方便，并没有给数据库里的密码加密，但是在正常开发里，是必须加密的。
-{% endnote %}
+
+
+> 这里为了测试方便，并没有给数据库里的密码加密，但是在正常开发里，是必须加密的。
+> 
 
 为什么要加密？2011年12月21日，有人在网络上公开了一个包含600万个CSDN用户资料的数据库，数据全部为明文储存，包含用户名、密码以及注册邮箱。事件发生后CSDN在微博、官方网站等渠道发出了声明，解释说此数据库系2009年备份所用，因不明原因泄露，已经向警方报案，后又在官网发出了公开道歉信。在接下来的十多天里，金山、网易、京东、当当、新浪等多家公司被卷入到这次事件中。整个事件中最触目惊心的莫过于CSDN把用户密码明文存储，由于很多用户是多个网站共用一个密码，因此一个网站密码泄露就会造成很大的安全隐患。由于有了这么多前车之鉴，我们现在做系统时，密码都要加密处理。
 

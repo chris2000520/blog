@@ -10,11 +10,11 @@ categories: 笔记
 
 # Maven简介
 
-{% note primary %}
 
-如果拿一个普通的JavaWeb项目和一个由maven工程搭建的项目相比较，你会发现maven项目要小的多！原因主要是因为前面WEB程序要运行，我们必须将项目运行所需的Jar包复制到工程目录中，从而导致了工程很大。而maven项目通过在`pom.xml`文件中添加所需jar包的坐标，这样就很好的避免了jar直接引入进来，在需要用到jar包的时候，只要查找`pom.xml`文件，再通过`pom.xml`文件中的坐标，到一个专门用于存放jar包的仓库(maven仓库)中根据坐标从而找到这些jar包，再把这jar包拿去运行，当然就很小了。
 
-{%  endnote %}
+> 如果拿一个普通的JavaWeb项目和一个由maven工程搭建的项目相比较，你会发现maven项目要小的多！原因主要是因为前面WEB程序要运行，我们必须将项目运行所需的Jar包复制到工程目录中，从而导致了工程很大。而maven项目通过在`pom.xml`文件中添加所需jar包的坐标，这样就很好的避免了jar直接引入进来，在需要用到jar包的时候，只要查找`pom.xml`文件，再通过`pom.xml`文件中的坐标，到一个专门用于存放jar包的仓库(maven仓库)中根据坐标从而找到这些jar包，再把这jar包拿去运行，当然就很小了。
+
+
 
 maven在美国是一个口语化的词语，代表专家、内行的意思。一个对maven比较正式的定义是这么说的：maven是一个项目管理工具，它包含了一个**项目对象模型** (POM：Project Object Model)，一组**标准集合**，一个**项目生命周期**(Project Lifecycle)，一个**依赖管理系统**(Dependency Management System)，和用来运行定义在**生命周期阶段**(phase)中**插件**(plugin)**目标**(goal)的逻辑。
 

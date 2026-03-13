@@ -9,9 +9,9 @@ categories: 生活
 
 回寝室的路上，突然循环到Jony J的My Man，这种走心的文字其实很容易让人产生共鸣，于是我决定记录下来，每当我心情不好的时候就过来看看也好。
 
-{% note success %}
+
 网页音乐链接：[My Man](https://music.163.com/#/song?id=1325896303)
-{% endnote %}
+
 
 # My Man 
 突然就想给你打个电话  

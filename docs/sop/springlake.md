@@ -8,12 +8,15 @@ categories: 生活
 
 ![春景](https://zhaowuya.s3.bitiful.net/springlake.jpg)
 
-<center>沁湖春景
+沁湖春景
 
 
 
-<center>绿暗红稀沁水低，学忙事锁未几离。
+绿暗红稀沁水低，学忙事锁未几离。
 
-<center>今朝出世能观此，便晓春轻拂柳堤。
 
-   
+
+今朝出世能观此，便晓春轻拂柳堤。
+
+
+

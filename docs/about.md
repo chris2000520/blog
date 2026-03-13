@@ -5,13 +5,11 @@ sticky: 1
 
 研三在读，计算机科学与技术学院，家住松山滋水地，求学十余载，慕大厂工作，行有趣开发，愿识志同道合者
 
-E-mail : `zhaowuya@foxmail.com`
+E-mail: zhaowuya@foxmail.com
 
 图像存储：[缤纷云](https://console.bitiful.com/dashboard)
 
-<br/>
 
-{% note success %}
 
 2020年1月15日
 
@@ -37,4 +35,3 @@ E-mail : `zhaowuya@foxmail.com`
 
 重新设计网站，从审美角度统一风格
 
-{% endnote %}
