@@ -7,11 +7,11 @@ categories: 笔记
 math: true
 ---
 
-# 起因
+# MathJax
 
 最近在写一些算法方面的博客时，经常会出现比较复杂的数学公式，用键盘敲不出来，即使打出来了，效果也不是太好。最后在网上找到了`Mathjax`插件，能够比较好的在网页上渲染数学公式，就写一篇博客记录一下使用方法。
 
-# 基本语法
+## 基本语法
 
 - 在正文中同一行插入LaTeX公式用，使用两个`$`包含公式可以独立一行
 
@@ -33,7 +33,7 @@ math: true
 
 具体参考文档请看这里[数学公式语法——Mathjax教程 | 冲弱's Blog](https://oysz2016.github.io/post/8611e6fb.html#Mathjax简介)
 
-# 演示
+## 演示
 
 $$
 \Huge f^{'}(x)=ax+b+\pi+\alpha+\beta+\gamma \tag {1.1}

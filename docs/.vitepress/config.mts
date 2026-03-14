@@ -13,13 +13,16 @@ const base = process.env.GITHUB_ACTIONS === 'true'
 // Vitepress 默认配置
 // 详见文档：https://vitepress.dev/reference/site-config
 export default defineConfig({
+  markdown: {
+    math: true
+  },
   // 继承博客主题(@sugarat/theme)
   extends: blogTheme,
   base,
   lang: 'zh-cn',
-  title: '书灏的博客',
+  title: '庐山烟雨浙江潮',
   description: '庐山烟雨浙江潮',
-  // lastUpdated: true,
+  lastUpdated: true,
   // 详见：https://vitepress.dev/zh/reference/site-config#head
   head: [
     // 配置网站的图标（显示在浏览器的 tab 上）
@@ -47,7 +50,8 @@ export default defineConfig({
     // },
     nav: [
       { text: '首页', link: '/' },
-      { text: '关于作者', link: 'https://zhaowuya.top/blog/about.html' }
+      { text: '关于', link: 'https://zhaowuya.top/blog/about.html' },
+      { text: '回到过去', link: 'https://zhaowuya.top/'}
     ],
     socialLinks: [
       {

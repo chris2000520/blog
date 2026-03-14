@@ -1,5 +1,5 @@
 ---
-title: Spring Security笔记
+title: Spring Security
 tags:
   - Java
   - Spring
@@ -8,7 +8,7 @@ date: 2022-04-16 10:53:06
 categories: 笔记
 ---
 
-# 简介
+# Spring Security
 
 `Spring`是非常流行和成功的Java应用开发框架，Spring Security正是Spring家族中的成员。Spring Security基于Spring框架，提供了一套Web应用安全性的完整解决方案。
 
@@ -22,7 +22,7 @@ categories: 笔记
 
 **以上只是一个推荐的组合而已，如果单纯从技术上来说，无论怎么组合，都是可行的。**
 
-# 快速开始
+## 快速开始
 
 1. 使用IDEA初始化一个最简单的Spring Boot项目。
 
@@ -70,7 +70,7 @@ categories: 笔记
 
    默认的用户名是`user`，密码就是控制台里生成的密码，然后就能访问资源了😁！浏览器页面上会输出`hello security`。
 
-# 基本原理
+## 基本原理
 
 Spring Security本质是是一个**过滤器链**。
 
@@ -109,9 +109,7 @@ Spring Security本质是是一个**过滤器链**。
 | `FilterSecurityInterceptor`                     | 处理授权相关                                             | YES          |
 | SwitchUserFilter                                | 处理账户切换                                             | NO           |
 
-# Web权限方案
-
-## 设置登录用户名和密码
+## Web权限方案
 
 ### 通过配置文件
 

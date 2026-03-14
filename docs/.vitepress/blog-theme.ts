@@ -64,6 +64,12 @@ const blogTheme = getThemeConfig({
         'https://vitepress.dev/vitepress-logo-large.webp',
       url: 'https://vitepress.dev/',
     },
+    {
+      nickname: 'SlovinG',
+      des: '为学应尽毕生力，攀高须贵少年时',
+      avatar: 'https://sloving.top/img/head.png',
+      url: 'https://sloving.top/',
+    },
   ],
 
   // 公告
@@ -79,24 +85,6 @@ const blogTheme = getThemeConfig({
       {
         type: 'text',
         content: '欢迎大家私信交流'
-      },
-      {
-        type: 'text',
-        content: '文章首/文尾有群二维码',
-        style: 'padding-top:0'
-      },
-      {
-        type: 'button',
-        content: '作者博客',
-        link: 'https://sugarat.top'
-      },
-      {
-        type: 'button',
-        content: '加群交流',
-        props: {
-          type: 'success'
-        },
-        link: 'https://theme.sugarat.top/group.html',
       }
     ],
     duration: 0
