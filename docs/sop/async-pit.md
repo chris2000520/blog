@@ -174,14 +174,6 @@ CompletableFuture.allOf(a, b, c).join();        // 多个并行完再汇总
 
 顺带一提：如果当初想用 CompletableFuture 重写，可以在 for 循环里把 future 收集起来，一批搞完 `allOf().join()` 再下一批，也能压住并发。但那样要处理每个 future 的异常，还引入阻塞等待，**改动比重一个 Semaphore 大多了**。所以最后还是选了最小侵入方案。
 
-## 五、教训
-
-1. **@Async 是隐式并发源**：for 循环串行是假象，看一眼方法有没有 @Async、线程池多大。
-2. **限流要打在真实调用点**：放在发 HTTP 那一层，别放入口，不然漏路径。
-3. **单实例够用就别上分布式**：先确认并发跨不跨实例，别为本不存在的场景加复杂度。
-4. **不能丢数据的批量任务，用阻塞 acquire**：排队好过 tryAcquire 直接扔。
-5. **finally release 是铁律**：许可泄漏了，后面全变成"实际串行"，严重的直接卡死。
-
-## 六、附录
+## 五、附录
 
 - [企微错误码查询工具官方文档](https://developer.work.weixin.qq.com/devtool/query)
