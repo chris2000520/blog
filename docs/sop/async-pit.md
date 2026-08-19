@@ -11,6 +11,8 @@ categories: 笔记
 
 # 一次并发报错引起的惨案：@Async 的那些坑
 
+![江湖汇总](https://zhaowuya.s3.bitiful.net/%E6%B1%9F%E6%B9%96%E6%B1%87%E8%A7%82%E4%BA%AD.jpg)
+
 > 自己看的，随便写写。起因是企微"接口并发调用超过限制"的报错，最后定位到 @Async 头上。
 
 ## 一、报错长啥样
