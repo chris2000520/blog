@@ -9,7 +9,6 @@ interface Photo {
   date: string
   camera: string
   src: string
-  thumb: string
   width: number
   height: number
 }
@@ -19,6 +18,22 @@ const list = photos as Photo[]
 function joinMeta(parts: (string | undefined)[]) {
   return parts.filter(Boolean).join(' · ')
 }
+
+// 缤纷云图片处理：网格用小图、lightbox 用大图，按需实时缩放
+function imageUrl(url: string, params: string) {
+  return withBase(url) + (url.includes('?') ? '&' : '?') + params
+}
+
+function thumbUrl(url: string) {
+  return imageUrl(url, 'w=800&q=80')
+}
+
+function largeUrl(url: string) {
+  return imageUrl(url, 'w=1920&q=85')
+}
+
+// 骨架 → 渐进显示
+const loaded = ref<boolean[]>([])
 
 // —— justified 等高行布局 ——
 const GAP = 12
@@ -143,10 +158,11 @@ onUnmounted(() => {
           v-for="(idx, ci) in row.indices"
           :key="list[idx].src"
           class="gallery-item"
+          :class="{ 'is-loaded': loaded[idx] }"
           :style="{ width: `${row.widths[ci]}px`, height: `${row.height}px` }"
           @click.stop="open(idx)"
         >
-          <img :src="withBase(list[idx].thumb)" :alt="list[idx].title" loading="lazy">
+          <img :src="thumbUrl(list[idx].src)" :alt="list[idx].title" loading="lazy" @load="loaded[idx] = true">
           <figcaption class="gallery-item__overlay">
             <span class="gallery-item__title">{{ list[idx].title }}</span>
             <span class="gallery-item__meta">{{ joinMeta([list[idx].location, list[idx].date]) }}</span>
@@ -171,7 +187,7 @@ onUnmounted(() => {
           </button>
 
           <figure class="lightbox__body">
-            <img :src="withBase(currentPhoto.src)" :alt="currentPhoto.title">
+            <img :src="largeUrl(currentPhoto.src)" :alt="currentPhoto.title">
             <figcaption class="lightbox__caption">
               <span class="lightbox__title">{{ currentPhoto.title }}</span>
               <span class="lightbox__meta">
@@ -217,6 +233,21 @@ onUnmounted(() => {
   cursor: zoom-in;
   overflow: hidden;
   border-radius: 8px;
+  background-color: var(--vp-c-bg-soft);
+}
+
+/* 骨架：加载完成前的扫光 */
+.gallery-item::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.35), transparent);
+  transform: translateX(-100%);
+  animation: gallery-shimmer 1.4s infinite;
+}
+
+.gallery-item.is-loaded::after {
+  display: none;
 }
 
 .gallery-item img {
@@ -224,11 +255,22 @@ onUnmounted(() => {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.4s ease;
+  opacity: 0;
+  transition: opacity 0.5s ease, transform 0.4s ease;
+}
+
+.gallery-item.is-loaded img {
+  opacity: 1;
 }
 
 .gallery-item:hover img {
   transform: scale(1.04);
+}
+
+@keyframes gallery-shimmer {
+  100% {
+    transform: translateX(100%);
+  }
 }
 
 .gallery-item__overlay {
