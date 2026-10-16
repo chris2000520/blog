@@ -50,7 +50,8 @@ export default defineConfig({
     // },
     nav: [
       { text: '首页', link: '/' },
-      { text: '关于', link: 'https://zhaowuya.top/blog/about.html' },
+      { text: '关于', link: '/about.html' },
+      { text: '摄影', link: '/gallery' },
       { text: '回到过去', link: 'https://zhaowuya.top/'}
     ],
     socialLinks: [

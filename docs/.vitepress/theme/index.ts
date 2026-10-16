@@ -6,4 +6,12 @@ import './style.css'
 // 自定义主题色
 // import './user-theme.css'
 
-export default BlogTheme
+// 摄影画廊组件
+import Gallery from './components/Gallery.vue'
+
+export default {
+  extends: BlogTheme,
+  enhanceApp({ app }) {
+    app.component('Gallery', Gallery)
+  }
+}
