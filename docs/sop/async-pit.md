@@ -1,5 +1,5 @@
 ---
-title: 一次并发报错引起的惨案：@Async 的那些坑
+title: Async的那些坑
 tags:
   - Java
   - Spring
