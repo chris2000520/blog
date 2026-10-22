@@ -169,7 +169,7 @@ npx skills@latest add mattpocock/skills
 
 ---
 
-# 补充：技能包到底有没有用？
+## 补充：技能包到底有没有用？
 
 有开发者用前沿实验室同款基准（SWE-bench Pro 与 SlopCodeBench）做了两个月的对照实验：每月重跑同一批技能包，全部以当月无技能基线为参照，[原文链接](https://orcabot.com/benchmarks/agent-skills)。
 
