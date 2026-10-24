@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, onUnmounted, ref } from 'vue'
+import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import { withBase } from 'vitepress'
 import photos from '../../../gallery/photos.json'
 
@@ -29,7 +29,8 @@ function thumbUrl(url: string) {
 }
 
 function largeUrl(url: string) {
-  return imageUrl(url, 'w=1920&q=85')
+  // lightbox 用原图，放大后才能看清细节
+  return withBase(url)
 }
 
 // 骨架 → 渐进显示
@@ -114,15 +115,208 @@ function prev() {
     current.value = (current.value - 1 + list.length) % list.length
 }
 
+// —— lightbox 缩放 / 拖拽 ——
+const MIN_SCALE = 1
+const MAX_SCALE = 5
+const ZOOM_STEP = 1.4
+
+const stageEl = ref<HTMLElement | null>(null)
+const imgEl = ref<HTMLImageElement | null>(null)
+const scale = ref(1)
+const offset = ref({ x: 0, y: 0 })
+const dragging = ref(false)
+const zoomPercent = computed(() => Math.round(scale.value * 100))
+
+const pointerMap = new Map<number, { x: number; y: number }>()
+let dragStart: { x: number; y: number; ox: number; oy: number } | null = null
+let pinchStart: {
+  distance: number
+  scale: number
+  midX: number
+  midY: number
+  ox: number
+  oy: number
+} | null = null
+
+function clampScale(value: number) {
+  return Math.min(MAX_SCALE, Math.max(MIN_SCALE, value))
+}
+
+function clampOffset(x: number, y: number, nextScale = scale.value) {
+  const stage = stageEl.value
+  const img = imgEl.value
+  if (!stage || !img)
+    return { x: 0, y: 0 }
+  const maxX = Math.max(0, (img.offsetWidth * nextScale - stage.clientWidth) / 2)
+  const maxY = Math.max(0, (img.offsetHeight * nextScale - stage.clientHeight) / 2)
+  return {
+    x: Math.min(maxX, Math.max(-maxX, x)),
+    y: Math.min(maxY, Math.max(-maxY, y)),
+  }
+}
+
+function setScale(target: number, clientX?: number, clientY?: number) {
+  const stage = stageEl.value
+  const from = scale.value
+  const to = clampScale(target)
+  if (!stage || Math.abs(to - from) < 0.001)
+    return
+  if (to === MIN_SCALE) {
+    scale.value = MIN_SCALE
+    offset.value = { x: 0, y: 0 }
+    return
+  }
+  const rect = stage.getBoundingClientRect()
+  const cx = (clientX ?? rect.left + rect.width / 2) - rect.left - rect.width / 2
+  const cy = (clientY ?? rect.top + rect.height / 2) - rect.top - rect.height / 2
+  const ratio = to / from
+  scale.value = to
+  offset.value = clampOffset(
+    cx - ratio * (cx - offset.value.x),
+    cy - ratio * (cy - offset.value.y),
+    to,
+  )
+}
+
+function zoomBy(factor: number) {
+  setScale(scale.value * factor)
+}
+
+function resetZoom() {
+  scale.value = MIN_SCALE
+  offset.value = { x: 0, y: 0 }
+  dragging.value = false
+  pointerMap.clear()
+  dragStart = null
+  pinchStart = null
+}
+
+function onWheel(e: WheelEvent) {
+  setScale(scale.value * Math.exp(-e.deltaY * 0.002), e.clientX, e.clientY)
+}
+
+function onDoubleClick(e: MouseEvent) {
+  if (scale.value > MIN_SCALE)
+    resetZoom()
+  else
+    setScale(2.5, e.clientX, e.clientY)
+}
+
+function pointerDistance(a: { x: number; y: number }, b: { x: number; y: number }) {
+  return Math.hypot(a.x - b.x, a.y - b.y)
+}
+
+function onPointerDown(e: PointerEvent) {
+  if (e.pointerType === 'mouse' && e.button !== 0)
+    return
+  const stage = stageEl.value
+  if (!stage)
+    return
+  stage.setPointerCapture(e.pointerId)
+  pointerMap.set(e.pointerId, { x: e.clientX, y: e.clientY })
+
+  if (pointerMap.size === 1 && scale.value > MIN_SCALE) {
+    dragStart = { x: e.clientX, y: e.clientY, ox: offset.value.x, oy: offset.value.y }
+    dragging.value = true
+  }
+  else if (pointerMap.size === 2) {
+    const [a, b] = [...pointerMap.values()]
+    dragStart = null
+    dragging.value = false
+    pinchStart = {
+      distance: Math.max(1, pointerDistance(a, b)),
+      scale: scale.value,
+      midX: (a.x + b.x) / 2,
+      midY: (a.y + b.y) / 2,
+      ox: offset.value.x,
+      oy: offset.value.y,
+    }
+  }
+}
+
+function onPointerMove(e: PointerEvent) {
+  if (!pointerMap.has(e.pointerId))
+    return
+  pointerMap.set(e.pointerId, { x: e.clientX, y: e.clientY })
+  const stage = stageEl.value
+  if (!stage)
+    return
+
+  if (pointerMap.size >= 2 && pinchStart) {
+    const [a, b] = [...pointerMap.values()]
+    const rect = stage.getBoundingClientRect()
+    const midX = (a.x + b.x) / 2
+    const midY = (a.y + b.y) / 2
+    const nextScale = clampScale(
+      pinchStart.scale * (pointerDistance(a, b) / pinchStart.distance),
+    )
+    const ratio = nextScale / pinchStart.scale
+    const cx = pinchStart.midX - rect.left - rect.width / 2
+    const cy = pinchStart.midY - rect.top - rect.height / 2
+    const nx = midX - rect.left - rect.width / 2
+    const ny = midY - rect.top - rect.height / 2
+    scale.value = nextScale
+    offset.value = clampOffset(
+      nx - ratio * (cx - pinchStart.ox),
+      ny - ratio * (cy - pinchStart.oy),
+      nextScale,
+    )
+    return
+  }
+
+  if (dragStart) {
+    offset.value = clampOffset(
+      dragStart.ox + e.clientX - dragStart.x,
+      dragStart.oy + e.clientY - dragStart.y,
+    )
+  }
+}
+
+function onPointerEnd(e: PointerEvent) {
+  pointerMap.delete(e.pointerId)
+  if (pointerMap.size < 2)
+    pinchStart = null
+
+  if (pointerMap.size === 0) {
+    dragging.value = false
+    dragStart = null
+  }
+  else if (pointerMap.size === 1 && scale.value > MIN_SCALE) {
+    const [p] = [...pointerMap.values()]
+    dragStart = { x: p.x, y: p.y, ox: offset.value.x, oy: offset.value.y }
+    dragging.value = true
+  }
+  else {
+    dragging.value = false
+    dragStart = null
+  }
+}
+
+function onImageLoad() {
+  offset.value = clampOffset(offset.value.x, offset.value.y)
+}
+
+watch(current, resetZoom)
+
 function onKey(e: KeyboardEvent) {
   if (current.value === null)
     return
-  if (e.key === 'Escape')
+  if (e.key === 'Escape') {
     close()
-  else if (e.key === 'ArrowRight')
+    return
+  }
+  if (e.ctrlKey || e.metaKey || e.altKey)
+    return
+  if (e.key === 'ArrowRight')
     next()
   else if (e.key === 'ArrowLeft')
     prev()
+  else if (e.key === '+' || e.key === '=')
+    zoomBy(ZOOM_STEP)
+  else if (e.key === '-')
+    zoomBy(1 / ZOOM_STEP)
+  else if (e.key === '0')
+    resetZoom()
 }
 
 function updateContainerWidth() {
@@ -187,7 +381,28 @@ onUnmounted(() => {
           </button>
 
           <figure class="lightbox__body">
-            <img :src="largeUrl(currentPhoto.src)" :alt="currentPhoto.title">
+            <div class="lightbox__stage-wrap">
+              <div
+                ref="stageEl"
+                class="lightbox__stage"
+                :class="{ 'is-zoomed': scale > 1, 'is-dragging': dragging }"
+                @wheel.prevent="onWheel"
+                @dblclick="onDoubleClick"
+                @pointerdown="onPointerDown"
+                @pointermove="onPointerMove"
+                @pointerup="onPointerEnd"
+                @pointercancel="onPointerEnd"
+              >
+                <img
+                  ref="imgEl"
+                  :src="largeUrl(currentPhoto.src)"
+                  :alt="currentPhoto.title"
+                  draggable="false"
+                  :style="{ transform: `translate3d(${offset.x}px, ${offset.y}px, 0) scale(${scale})` }"
+                  @load="onImageLoad"
+                >
+              </div>
+            </div>
             <figcaption class="lightbox__caption">
               <span class="lightbox__title">{{ currentPhoto.title }}</span>
               <span class="lightbox__meta">
@@ -195,6 +410,16 @@ onUnmounted(() => {
               </span>
             </figcaption>
           </figure>
+
+          <div class="lightbox__toolbar" @click.stop>
+            <button type="button" aria-label="缩小" title="缩小" @click="zoomBy(1 / ZOOM_STEP)">−</button>
+            <span class="lightbox__zoom">{{ zoomPercent }}%</span>
+            <button type="button" aria-label="放大" title="放大" @click="zoomBy(ZOOM_STEP)">+</button>
+            <button type="button" class="lightbox__reset" aria-label="重置缩放" title="重置缩放" @click="resetZoom">
+              重置
+            </button>
+          </div>
+          <p class="lightbox__hint">滚轮 / 双指缩放 · 拖动查看 · 双击放大</p>
 
           <button
             class="lightbox__nav lightbox__next"
@@ -317,21 +542,116 @@ onUnmounted(() => {
   display: flex;
   flex-direction: column;
   align-items: center;
-  max-width: 90vw;
-  max-height: 88vh;
+  width: min(92vw, 1400px);
+  height: 86vh;
   margin: 0;
 }
 
-.lightbox__body img {
-  max-width: 90vw;
-  max-height: 74vh;
+.lightbox__stage-wrap {
+  position: relative;
+  flex: 1;
+  width: 100%;
+  min-height: 0;
+}
+
+.lightbox__stage {
+  position: absolute;
+  inset: 44px 0 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  touch-action: none;
+  user-select: none;
+  cursor: zoom-in;
+}
+
+.lightbox__stage.is-zoomed {
+  cursor: grab;
+}
+
+.lightbox__stage.is-dragging {
+  cursor: grabbing;
+}
+
+.lightbox__stage img {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 100%;
   object-fit: contain;
+  user-select: none;
+  -webkit-user-drag: none;
+  transform-origin: center center;
+  will-change: transform;
 }
 
 .lightbox__caption {
+  flex-shrink: 0;
+  max-width: 100%;
   margin-top: 16px;
+  padding: 0 16px;
   text-align: center;
   color: #ccc;
+}
+
+.lightbox__toolbar {
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  z-index: 4;
+  display: flex;
+  gap: 2px;
+  align-items: center;
+  padding: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 999px;
+  backdrop-filter: blur(8px);
+  transform: translateX(-50%);
+}
+
+.lightbox__toolbar button {
+  min-width: 32px;
+  height: 28px;
+  padding: 0 8px;
+  font-size: 16px;
+  line-height: 1;
+  color: #fff;
+  cursor: pointer;
+  background: transparent;
+  border: 0;
+  border-radius: 999px;
+}
+
+.lightbox__toolbar button:hover {
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.lightbox__zoom {
+  min-width: 48px;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  color: #ddd;
+  text-align: center;
+}
+
+.lightbox__reset {
+  font-size: 12px !important;
+}
+
+.lightbox__hint {
+  position: absolute;
+  bottom: 16px;
+  left: 50%;
+  z-index: 3;
+  margin: 0;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.5);
+  white-space: nowrap;
+  pointer-events: none;
+  transform: translateX(-50%);
 }
 
 .lightbox__title {
@@ -351,6 +671,7 @@ onUnmounted(() => {
   position: absolute;
   top: 24px;
   right: 32px;
+  z-index: 4;
   font-size: 36px;
   line-height: 1;
   color: #fff;
@@ -364,6 +685,7 @@ onUnmounted(() => {
   position: absolute;
   top: 28px;
   left: 32px;
+  z-index: 4;
   font-size: 14px;
   color: #ccc;
 }
@@ -371,6 +693,7 @@ onUnmounted(() => {
 .lightbox__nav {
   position: absolute;
   top: 50%;
+  z-index: 3;
   transform: translateY(-50%);
   display: flex;
   align-items: center;
@@ -413,6 +736,26 @@ onUnmounted(() => {
   .gallery-row {
     gap: 8px;
     margin-bottom: 8px;
+  }
+  .lightbox__body {
+    width: 100%;
+    height: 100dvh;
+    padding: 68px 0 44px;
+    box-sizing: border-box;
+  }
+  .lightbox__caption {
+    margin-top: 8px;
+    font-size: 13px;
+  }
+  .lightbox__stage {
+    inset: 0;
+  }
+  .lightbox__toolbar {
+    top: 10px;
+  }
+  .lightbox__hint {
+    bottom: 10px;
+    font-size: 11px;
   }
   .lightbox__nav {
     width: 44px;
