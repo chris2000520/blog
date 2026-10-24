@@ -6,9 +6,8 @@ import { blogTheme } from './blog-theme'
 // 如果使用 GitHub/Gitee Pages 等公共平台部署
 // 通常需要修改 base 路径，通常为“/仓库名/”
 // 如果项目名已经为 name.github.io 域名，则不需要修改！
-const base = process.env.GITHUB_ACTIONS === 'true'
-  ? '/blog/'
-  : '/'
+// 这里使用自定义域名 zhaowuya.top，因此 base 应为 /
+const base = '/'
 
 // Vitepress 默认配置
 // 详见文档：https://vitepress.dev/reference/site-config
@@ -27,7 +26,7 @@ export default defineConfig({
   head: [
     // 配置网站的图标（显示在浏览器的 tab 上）
     // 修改了 base 这里也需要同步修改
-    ['link', { rel: 'icon', href: `${base}favicon.ico` }] 
+    ['link', { rel: 'icon', href: `${base}favicon.ico` }]
     // ['link', { rel: 'icon', href: '${base}favicon.ico' }]
   ],
   themeConfig: {
@@ -52,7 +51,7 @@ export default defineConfig({
       { text: '首页', link: '/' },
       { text: '关于', link: '/about.html' },
       { text: '摄影', link: '/gallery' },
-      { text: '回到过去', link: 'https://zhaowuya.top/'}
+      { text: '回到过去', link: 'https://zhaowuya.top/' }
     ],
     socialLinks: [
       {
