@@ -10,7 +10,9 @@
     "serve": "vitepress serve docs"
   },
   "dependencies": {
-    "@sugarat/theme": "^0.5.16"
+    "@sugarat/theme": "^0.5.16",
+    "aplayer": "^1.10.1",
+    "twikoo": "^2.0.17"
   },
   "directories": {
     "doc": "docs"

@@ -1,0 +1,9 @@
+[
+  {
+    "name": "歌曲名",
+    "artist": "歌手",
+    "url": "https://your-cdn.com/music/song.mp3",
+    "cover": "/music/covers/cover.jpg",
+    "lrc": "/music/lrc/song.lrc"
+  }
+]

@@ -1,0 +1,26 @@
+[
+  {
+    "name": "才二十三",
+    "artist": "方大同",
+    "url": "https://zhaowuya.s3.bitiful.net/%E5%8D%9A%E5%AE%A2%E9%9F%B3%E4%B9%90/%E6%96%B9%E5%A4%A7%E5%90%8C%20-%20%E6%89%8D%E4%BA%8C%E5%8D%81%E4%B8%89.mp3?no-wait=on",
+    "cover": "/music/covers/dreamer.jpg"
+  },
+  {
+    "name": "为你写的歌",
+    "artist": "方大同",
+    "url": "https://zhaowuya.s3.bitiful.net/%E5%8D%9A%E5%AE%A2%E9%9F%B3%E4%B9%90/%E6%96%B9%E5%A4%A7%E5%90%8C%20-%20%E4%B8%BA%E4%BD%A0%E5%86%99%E7%9A%84%E6%AD%8C.mp3?no-wait=on",
+    "cover": "/music/covers/orange-moon.jpg"
+  },
+  {
+    "name": "红豆",
+    "artist": "方大同",
+    "url": "https://zhaowuya.s3.bitiful.net/%E5%8D%9A%E5%AE%A2%E9%9F%B3%E4%B9%90/%E6%96%B9%E5%A4%A7%E5%90%8C%20-%20%E7%BA%A2%E8%B1%86.mp3?no-wait=on",
+    "cover": "/music/covers/soulboy.jpg"
+  },
+  {
+    "name": "Love Song",
+    "artist": "方大同",
+    "url": "https://zhaowuya.s3.bitiful.net/%E5%8D%9A%E5%AE%A2%E9%9F%B3%E4%B9%90/%E6%96%B9%E5%A4%A7%E5%90%8C%20-%20Love%20Song.mp3?no-wait=on",
+    "cover": "/music/covers/wonderland.jpg"
+  }
+]

@@ -17,6 +17,14 @@ export default defineConfig({
   },
   // 继承博客主题(@sugarat/theme)
   extends: blogTheme,
+  vite: {
+    server: {
+      watch: {
+        // 主题监听会把 docs 下的非 markdown 文件当作文章解析，忽略歌单目录避免开发时重启
+        ignored: ['**/public/music/**']
+      }
+    }
+  },
   base,
   lang: 'zh-cn',
   title: '庐山烟雨浙江潮',
